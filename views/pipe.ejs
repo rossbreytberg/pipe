@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pipe</title>
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="/static/js/index.js"></script>
+	</head>
+	<body>
+		<div id="roomid" style="display:none"><%= id %></div>
+		<div id="main">
+			<h1 id="room">Room: <%= id %></h1>
+			<h2 id="status">Status: </h2>
+			<form action="/upload/<%= id %>" target="pipe" enctype="multipart/form-data" method="POST">
+				<input type="file" id="fileToUpload" name="file" />
+				<br />
+				<input type="submit" value="Send" />
+			</form>
+			<div id="filename">File Name:</div>
+		</div>
+		<div id="pipecontainer"><iframe id="pipe" name="pipe" src=""></iframe></div>
+	</body>
+</html>

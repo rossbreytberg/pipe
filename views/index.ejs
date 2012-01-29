@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pipe</title>
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="/static/js/index.js"></script>
+	</head>
+	<body>
+		<div id="main">
+			<form>
+				<input type="text" id="roomselect" />
+				<input type="button" onclick="window.location='/'+document.getElementById('roomselect').value" value="Go" />
+			</form>
+		</div>
+	</body>
+</html>

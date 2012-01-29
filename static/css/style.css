@@ -1,0 +1,22 @@
+
+html {
+	min-height: 100%;
+}
+
+#main {
+	width: 400px;
+	margin: auto;
+	padding: 1em;
+	overflow: auto;
+}
+
+#pipecontainer {
+	width: 800px;
+	height: 600px;
+	margin: auto;
+}
+
+#pipe {
+	width: 800px;
+	height: 600px;
+}
