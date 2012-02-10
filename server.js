@@ -30,7 +30,7 @@ server.get('/download/:id', function(req, res) {
 	} else {
 		responses[req.params.id].push(res)
 	}
-	res.writeHead(200, {connection: 'keep-alive'})
+	res.writeHead(200, {'connection': 'keep-alive', 'content-type': fileType[req.params.id]})
 })
 
 server.post('/upload/:id', function(req, res) {
@@ -60,6 +60,7 @@ server.post('/upload/:id', function(req, res) {
 
 var connections = {} // stores arrays of sockets indexed by roomid they belong to
 var roomids = {} // stores roomids indexed by socket ids
+var fileType = {} // stores mime type of file being transferred in a room, indexed by roomid
 
 io.sockets.on('connection', function(socket) {
 	socket.on('connected', function(data) {
@@ -75,7 +76,8 @@ io.sockets.on('connection', function(socket) {
 		var roomid = roomids[socket.id]
 		for (var i = 0; i < connections[roomid].length; i++) {
 			if (connections[roomid][i] != socket) {
-				connections[roomid][i].emit('download', {filename:data['filename']})
+				connections[roomid][i].emit('download', {filename:data['filename'], filetype:data['filetype']})
+				fileType[roomid] = data['filetype']
 			}
 		}
 	})

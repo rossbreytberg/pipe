@@ -11,13 +11,15 @@ window.onload = function() {
   })
   socket.on('download', function(data) {
     document.getElementById('filename').childNodes[0].nodeValue = "File Name: "+data['filename']
+    document.getElementById('filetype').childNodes[0].nodeValue = "File Type: "+data['filetype']
     document.getElementById('pipe').setAttribute('src','/download/'+roomid)
   })
 }
 
 
 function prepareUpload() {
-  socket.emit('upload', {filename:document.getElementById('fileToUpload').files[0].name})
+  var file = document.getElementById('fileToUpload').files[0]
+  socket.emit('upload', {filename:file.name, filetype:file.type})
 }
 
 
