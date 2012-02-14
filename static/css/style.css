@@ -12,6 +12,13 @@ body {
     margin-right: 0px;
 }
 
+#container {
+    width: 800px;
+    margin: auto;
+    margin-top: 50px;
+    padding-top: 50px;
+}
+
 #topBar {
     background: #000000;
     width: 50%;
@@ -81,11 +88,6 @@ body {
 
 #loginButton {
     visibility: hidden;
-}
-
-#container {
-    width: 800px;
-    margin: auto;
 }
 
 #pipe {
