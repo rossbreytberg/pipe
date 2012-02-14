@@ -5,7 +5,7 @@ var io = require('socket.io')
 var server = express.createServer()
 server.set('view engine', 'ejs')
 server.set('view options', {
-	layout: false
+    layout: false
 })
 server.set('views', __dirname + "/views")
 server.use("/static", express.static(__dirname + "/static"))
@@ -17,77 +17,102 @@ io.set('log level', 1)
 var responses = {}
 
 server.get('/', function(req, res) {
-	res.render('index')
+    if (!req.query.room) {
+        res.render('index', {userCount:userCount})
+    } else {
+    var user = ''
+        if (req.query.user) {
+            user = req.query.user
+        } else {
+            user = 'Anonymous'
+        }
+        res.render('pipe', {room:req.query.room, user:user})
+    }
 })
 
-server.get('/:id', function(req, res) {
-	res.render('pipe', {id:req.params.id})
+server.get('/:room', function(req, res) {
+    var user
+    if (req.query.user) {
+        user = req.query.user
+    } else {
+        user = 'Anonymous'
+    }
+    res.render('pipe', {room:req.params.room, user:user})
 })
 
 server.get('/download/:id', function(req, res) {
-	if (responses[req.params.id] == null) {
-		responses[req.params.id] = [res]
-	} else {
-		responses[req.params.id].push(res)
-	}
-	res.writeHead(200, {'connection': 'keep-alive', 'content-type': fileType[req.params.id]})
+    if (responses[req.params.id] == null) {
+        responses[req.params.id] = [res]
+    } else {
+        responses[req.params.id].push(res)
+    }
+    res.writeHead(200, {'connection':'keep-alive', 'content-disposition':'inline;filename='+req.query.filename, 'content-type':'application/octet-stream'})
 })
 
 server.post('/upload/:id', function(req, res) {
-	if (responses[req.params.id] != null) {
-		var form = new formidable.IncomingForm();
-			form.parse(req)
-			form.onPart = function(part) {
-				part.on('data', function(data) {
-					for (var i = 0; i < responses[req.params.id].length; i++) {
-						responses[req.params.id][i].write(data)
-					}
-				})
-				part.on('end', function() {
-					for (var i = 0; i < responses[req.params.id].length; i++) {
-						responses[req.params.id][i].end()
-					}
-					delete responses[req.params.id]
-					res.write("File sent.")
-					res.end()
-				})
-			}
-	} else {
-		res.write("File sent.")
-		res.end()
-	}
+    if (responses[req.params.id] != null) {
+        var form = new formidable.IncomingForm();
+            form.parse(req)
+            form.onPart = function(part) {
+                part.on('data', function(data) {
+                    for (var i = 0; i < responses[req.params.id].length; i++) {
+                        responses[req.params.id][i].write(data)
+                    }
+                })
+                part.on('end', function() {
+                    for (var i = 0; i < responses[req.params.id].length; i++) {
+                        responses[req.params.id][i].end()
+                    }
+                    delete responses[req.params.id]
+                    res.write("File sent.")
+                    res.end()
+                })
+            }
+    } else {
+        res.write("File sent.")
+        res.end()
+    }
 })
 
-var connections = {} // stores arrays of sockets indexed by roomid they belong to
-var roomids = {} // stores roomids indexed by socket ids
-var fileType = {} // stores mime type of file being transferred in a room, indexed by roomid
+var userCount = 0 // a count of the total amount of users online
 
+// keeps a total count of all connections
 io.sockets.on('connection', function(socket) {
-	socket.on('connected', function(data) {
-		var roomid = data['roomid']
-		if (connections[roomid] == null) {
-			connections[roomid] = [socket]
-		} else {
-			connections[roomid].push(socket)
-		}
-		roomids[socket.id] = roomid
-	})
-	socket.on('upload', function(data) {
-		var roomid = roomids[socket.id]
-		for (var i = 0; i < connections[roomid].length; i++) {
-			if (connections[roomid][i] != socket) {
-				connections[roomid][i].emit('download', {filename:data['filename'], filetype:data['filetype']})
-				fileType[roomid] = data['filetype']
-			}
-		}
-	})
-	socket.on('disconnect', function() {
-		//console.log('Disconnected: '+socket.id)
-		var roomid = roomids[socket.id]
-		delete roomids[socket.id]
-		var roomSockets = connections[roomid]
-		//console.log('ROOM ID: '+roomid)
-		//console.log('CONNECTIONS: '+connections)
-		//console.log('ROOM SOCKETS: '+roomSockets)
-	})
+    userCount++
+    io.sockets.emit('userCountUpdate', {userCount:userCount})
+
+    socket.on('disconnect', function() {
+       userCount--
+       io.sockets.emit('userCountUpdate', {userCount:userCount})
+    })
+})
+
+
+// deals with connections in rooms
+io.of('/pipe').on('connection', function(socket) {
+
+    socket.on('setRoomAndUser', function(data) {
+        socket.set('user', data['user'])
+        socket.set('room', data['room'])
+        socket.join(data['room'])
+    })
+
+    socket.on('sharedFilesChange', function(data) {
+        socket.get('room', function(err, room) {
+            socket.get('files', function(err, files) {
+                if (files) {
+                    socket.broadcast.to(room).emit('filesRemoved', {files: files})
+                }
+                socket.set('files', data['files'])
+                socket.broadcast.to(room).emit('filesAdded', {files: data['files']})
+            })
+        })
+    })
+
+    socket.on('downloadRequest', function(data) {
+        socket.get('room', function(err, room) {
+            socket.broadcast.to(room).emit('uploadRequest', {id:data['id']})
+            socket.emit('beginDownload', {id:data['id'], name:data['file'].name})
+        })
+    })
 })

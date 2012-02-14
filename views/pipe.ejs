@@ -1,24 +1,33 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Pipe</title>
-		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
-		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-		<script type="text/javascript" src="/static/js/index.js"></script>
-	</head>
-	<body>
-		<div id="roomid" style="display:none"><%= id %></div>
-		<div id="main">
-			<h1 id="room">Room: <%= id %></h1>
-			<h2 id="status">Status: </h2>
-			<form action="/upload/<%= id %>" target="pipe" enctype="multipart/form-data" method="POST">
-				<input type="file" id="fileToUpload" name="file" />
-				<br />
-				<input type="submit" value="Send" />
-			</form>
-			<div id="filename">File Name:</div>
-			<div id="filetype">File Type:</div>
-		</div>
-		<div id="pipecontainer"><iframe id="pipe" name="pipe" src=""></iframe></div>
-	</body>
+    <head>
+        <title>Pipe</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+        <script type="text/javascript" src="/static/js/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="/static/js/pipe.js"></script>
+    </head>
+    <body>
+        <input id="room" type="hidden" value=<%= room %> />
+        <input id="user" type="hidden" value=<%= user %> />
+        <div id="topBar">
+        	<div id="title">Pipe</div>
+        	<div class="topBarRight"><a href="/">Exit Room >></a></div>
+        </div>
+        <div id="container">
+            <h1 id="roomdisplay">Room: <%= room %></h1>
+         	<h1 id="userdisplay">Username: <%= user %></h1>
+            <h2 id="status">Status: </h2>
+            <form id="uploadForm" target="pipe" enctype="multipart/form-data" method="POST">
+                <input id="sharedFiles" type="file" name="file" />
+            </form>
+            <h2>Currently Sharing:</h2>
+            <div id="filename">File Name:</div>
+            <div id="filetype">File Type:</div>
+            <div id="filesList">
+            	<h2>File List:</h2>
+            </div>
+            <iframe id="pipe" name="pipe" src=""></iframe>
+        </div>
+    </body>
 </html>

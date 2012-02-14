@@ -1,17 +1,26 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Pipe</title>
-		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
-		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-		<script type="text/javascript" src="/static/js/index.js"></script>
-	</head>
-	<body>
-		<div id="main">
-			<form>
-				<input type="text" id="roomselect" />
-				<input type="button" onclick="window.location='/'+document.getElementById('roomselect').value" value="Go" />
-			</form>
-		</div>
-	</body>
+    <head>
+        <title>Pipe</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+        <script type="text/javascript" src="/static/js/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="/static/js/index.js"></script>
+    </head>
+    <body>
+        <div id="topBar">
+            <div id="title">Pipe</div>
+            <div id="userCount" class="topBarRight">"Users Online: "+<%= userCount %></div>
+        </div>
+        <div id="container">
+            <div id="login">
+                <form>
+                    <input type="text" class="loginInput" name="room" placeholder="Room" /><br />
+                    <br />
+                    <input type="text" class="loginInput" name="user" placeholder="Username" />
+                    <input id="loginButton" type="submit" value="Enter" />
+                </form>
+            </div>
+        </div>
+    </body>
 </html>
