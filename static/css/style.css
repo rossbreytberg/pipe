@@ -114,6 +114,8 @@ body {
 }
 
 #pipe {
+    height: 0px;
+    width: 0px;
     visibility: hidden;
 }
 

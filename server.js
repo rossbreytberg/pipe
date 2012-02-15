@@ -93,28 +93,27 @@ io.of('/pipe').on('connection', function(socket) {
 
     socket.on('setRoomAndUser', function(data) {
         socket.set('user', data['user'])
-        socket.set('room', data['room'])
-        socket.join(data['room'])
+        socket.broadcast.to(socket.room).emit('refreshFilesList', {})
     })
 
-    socket.on('sharedFilesChange', function(data) {
-        socket.get('room', function(err, room) {
-            socket.get('user', function(err, user) {
-                socket.get('files', function(err, files) {
-                    if (files) {
-                        socket.broadcast.to(room).emit('filesRemoved', {files: files, user:user})
-                    }
-                    socket.set('files', data['files'])
-                    socket.broadcast.to(room).emit('filesAdded', {files: data['files'], user:user})
-                })
-            })
+    socket.on('disconnect', function() {
+        socket.broadcast.to(socket.room).emit('refreshFilesList', {})
+    })
+
+    socket.on('refreshFilesListRequest', function(data) {
+        socket.broadcast.to(socket.room).emit('refreshFilesList', {})
+        socket.emit('refreshFilesList', {})
+    })
+
+    socket.on('filesListUpdate', function(data) {
+        socket.get('user', function(err, user) {
+            socket.broadcast.to(socket.room).emit('filesAdded', {files: data['files'], user:user})
+            socket.emit('filesAdded', {files: data['files'], user:user})
         })
     })
 
     socket.on('downloadRequest', function(data) {
-        socket.get('room', function(err, room) {
-            socket.broadcast.to(room).emit('uploadRequest', {id:data['id']})
-            socket.emit('beginDownload', {id:data['id'], name:data['file'].name})
-        })
+        socket.broadcast.to(socket.room).emit('uploadRequest', {id:data['id']})
+        socket.emit('beginDownload', {id:data['id'], name:data['file'].name})
     })
 })
