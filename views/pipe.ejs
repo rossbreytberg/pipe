@@ -11,15 +11,22 @@
         <input id="room" type="hidden" value=<%= room %> />
         <input id="user" type="hidden" value=<%= user %> />
         <div id="topBar">
-        	<div id="topBarTitle">Pipe</div>
-        	<div class="topBarRight"><a href="/">Exit Room >></a></div>
+            <div id="topBarCenterContainer">
+            	<div id="topBarTitle">Pipe</div>
+            	<div class="topBarRight"><a href="/">Exit Room >></a></div>
+            </div>
         </div>
         <div id="container">
-            <h1 id="roomdisplay">Room: <%= room %></h1>
-         	<h1 id="userdisplay">Username: <%= user %></h1>
-            <h2 id="status">Status: </h2>
-            <div id="sharedFilesPicker">
-                <div class="subBar">Currently Sharing:</div>
+            <div id="connectionInfo" class="subWindow">
+                <div class="subContainer">
+                    <div id="roomdisplay">Room: <%= room %></div>
+                 	<div id="userdisplay">Username: <%= user %></div>
+                    <div id="status">Status: </div>
+                </div>
+            </div>
+            <br />
+            <div id="sharedFilesPicker" class="subWindow">
+                <div class="subBar">Currently Sharing</div>
                 <div class="subContainer">
                     <div id="filename">Name:</div>
                     <div id="filetype">Type:</div>
@@ -29,9 +36,20 @@
                     </form>
                 </div>
             </div>
+            <div id="chatRoom" class="subWindow">
+                <div class="subBar">Chat</div>
+                <div class="subContainer">
+                    <div id="chatText"></div>
+                    <br />
+                    <form target="pipe">
+                        <input id="chatInput" type="text" />
+                        <input type="submit" class="hiddenSubmitButton" />
+                    </form>
+                </div>
+            </div>
             <br />
-            <div id="filesList">
-            	<div class="subBar">File List:</div>
+            <div id="filesList" class="subWindow">
+            	<div class="subBar">File List</div>
                 <div id="filesListContainer" class="subContainer"></div>
             </div>
             <iframe id="pipe" name="pipe" src=""></iframe>

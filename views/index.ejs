@@ -9,17 +9,21 @@
     </head>
     <body>
         <div id="topBar">
-            <div id="topBarTitle">Pipe</div>
-            <div id="userCount" class="topBarRight">"Users Online: "+<%= userCount %></div>
+            <div id="topBarCenterContainer">
+                <div id="topBarTitle">Pipe</div>
+                <div id="userCount" class="topBarRight">"Users Online: "+<%= userCount %></div>
+            </div>
         </div>
         <div id="container">
-            <div id="login">
-                <form>
-                    <input type="text" class="loginInput" name="room" placeholder="Room" /><br />
-                    <br />
-                    <input type="text" class="loginInput" name="user" placeholder="Username" />
-                    <input id="loginButton" type="submit" value="Enter" />
-                </form>
+            <div id="login" class="subWindow">
+                <div class="subContainer">
+                    <form>
+                        <input type="text" class="loginInput" name="room" placeholder="Room" /><br />
+                        <br />
+                        <input type="text" class="loginInput" name="user" placeholder="Username" />
+                        <input type="submit" class="hiddenSubmitButton" value="Enter" />
+                    </form>
+                </div>
             </div>
         </div>
     </body>
