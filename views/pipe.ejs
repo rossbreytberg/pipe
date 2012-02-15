@@ -11,21 +11,28 @@
         <input id="room" type="hidden" value=<%= room %> />
         <input id="user" type="hidden" value=<%= user %> />
         <div id="topBar">
-        	<div id="title">Pipe</div>
+        	<div id="topBarTitle">Pipe</div>
         	<div class="topBarRight"><a href="/">Exit Room >></a></div>
         </div>
         <div id="container">
             <h1 id="roomdisplay">Room: <%= room %></h1>
          	<h1 id="userdisplay">Username: <%= user %></h1>
             <h2 id="status">Status: </h2>
-            <form id="uploadForm" target="pipe" enctype="multipart/form-data" method="POST">
-                <input id="sharedFiles" type="file" name="file" />
-            </form>
-            <h2>Currently Sharing:</h2>
-            <div id="filename">File Name:</div>
-            <div id="filetype">File Type:</div>
+            <div id="sharedFilesPicker">
+                <div class="subBar">Currently Sharing:</div>
+                <div class="subContainer">
+                    <div id="filename">Name:</div>
+                    <div id="filetype">Type:</div>
+                    <div id="filesize">Size:</div>
+                    <form id="uploadForm" target="pipe" enctype="multipart/form-data" method="POST">
+                        <input id="sharedFiles" type="file" name="file" />
+                    </form>
+                </div>
+            </div>
+            <br />
             <div id="filesList">
-            	<h2>File List:</h2>
+            	<div class="subBar">File List:</div>
+                <div id="filesListContainer" class="subContainer"></div>
             </div>
             <iframe id="pipe" name="pipe" src=""></iframe>
         </div>

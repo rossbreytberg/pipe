@@ -99,12 +99,14 @@ io.of('/pipe').on('connection', function(socket) {
 
     socket.on('sharedFilesChange', function(data) {
         socket.get('room', function(err, room) {
-            socket.get('files', function(err, files) {
-                if (files) {
-                    socket.broadcast.to(room).emit('filesRemoved', {files: files})
-                }
-                socket.set('files', data['files'])
-                socket.broadcast.to(room).emit('filesAdded', {files: data['files']})
+            socket.get('user', function(err, user) {
+                socket.get('files', function(err, files) {
+                    if (files) {
+                        socket.broadcast.to(room).emit('filesRemoved', {files: files, user:user})
+                    }
+                    socket.set('files', data['files'])
+                    socket.broadcast.to(room).emit('filesAdded', {files: data['files'], user:user})
+                })
             })
         })
     })
