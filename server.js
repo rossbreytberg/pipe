@@ -41,7 +41,7 @@ server.get('/:room', function(req, res) {
 })
 
 server.get('/download/:id', function(req, res) {
-    console.log('downloading: '+req.query)
+    console.log('downloading: '+req.query.filename)
     if (responses[req.params.id] == null) {
         responses[req.params.id] = [res]
     } else {
@@ -76,6 +76,10 @@ server.post('/upload/:id', function(req, res) {
     }
 })
 
+server.post('/chat', function(req, res) {
+    res.end()
+})
+
 var userCount = 0 // a count of the total amount of users online
 
 // keeps a total count of all connections
@@ -96,6 +100,7 @@ io.of('/pipe').on('connection', function(socket) {
         socket.set('room', data['room'])
         socket.set('user', data['user'])
         socket.join(data['room'])
+        socket.emit('userIdAssign', {userId:socket.id})
         socket.broadcast.to(data['room']).emit('refreshFileList', {})
         socket.broadcast.to(data['room']).emit('refreshUserList', {})
         socket.emit('refreshUserList', {})
@@ -103,10 +108,10 @@ io.of('/pipe').on('connection', function(socket) {
 
     socket.on('disconnect', function() {
         socket.get('room', function(err, room) {
-            socket.broadcast.to(room).emit('refreshFilesList', {})
+            socket.broadcast.to(room).emit('refreshFileList', {})
             socket.get('user', function(err, user) {
                 socket.broadcast.to(room).emit('refreshUserList', {})
-            }) 
+            })
         })
     })
 
@@ -120,8 +125,8 @@ io.of('/pipe').on('connection', function(socket) {
     socket.on('fileListUpdate', function(data) {
         socket.get('room', function(err, room) {
             socket.get('user', function(err, user) {
-                socket.broadcast.to(room).emit('filesAdded', {files: data['files'], user:user})
-                socket.emit('filesAdded', {files: data['files'], user:user})
+                socket.broadcast.to(room).emit('filesAdded', {files: data['files'], user:user, userId:socket.id})
+                socket.emit('filesAdded', {files: data['files'], user:user, userId:socket.id})
             })
         })
 
@@ -147,10 +152,8 @@ io.of('/pipe').on('connection', function(socket) {
 
     socket.on('downloadRequest', function(data) {
         socket.get('room', function(err, room) {
-            socket.get('user', function(err, user) {
-                socket.broadcast.to(room).emit('uploadRequest', {id:data['id'], requester:user})
-                socket.emit('uploadRequest', {id:data['id'], requester:user})
-            })
+            socket.broadcast.to(room).emit('uploadRequest', {id:data['id'], requester:socket.id})
+            socket.emit('uploadRequest', {id:data['id'], requester:socket.id})
         })
     })
 

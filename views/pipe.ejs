@@ -27,7 +27,7 @@
                     <div class="subBar">Chat</div>
                     <div id="chatSubContainer" class="subContainer">
                         <div id="chatText" class="scrollableTextWrapArea"></div>
-                        <form id="chatInputForm" target="pipe" method="post">
+                        <form id="chatInputForm" target="chatPipe" action="/chat" method="POST">
                             <input id="chatInput" name="message" type="text" />
                             <input type="submit" class="hiddenSubmitButton" />
                         </form>
@@ -39,7 +39,7 @@
                         <div id="userListText" class="scrollableTextWrapArea"></div>
                     </div>
                 </div>
-                <div style="clear: both;"></div>
+                <div style="clear:both;"></div>
             </div>
             <br />
             <div id="sharedFilesPicker" class="subWindow">
@@ -48,7 +48,7 @@
                     <div id="filename">Name:</div>
                     <div id="filetype">Type:</div>
                     <div id="filesize">Size:</div>
-                    <form id="uploadForm" target="upPipe" enctype="multipart/form-data" method="POST">
+                    <form id="uploadForm" enctype="multipart/form-data" method="POST">
                         <input id="sharedFiles" type="file" name="file" />
                     </form>
                 </div>
@@ -58,8 +58,7 @@
             	<div class="subBar">File List</div>
                 <div id="fileListContainer" class="subContainer"></div>
             </div>
-            <iframe id="upPipe" class="pipe" name="upPipe" src=""></iframe>
-            <iframe id="downPipe" class="pipe" name="downPipe" src=""></iframe>
+            <iframe id="chatPipe" class="pipe" name="chatPipe" src=""></iframe>
         </div>
     </body>
 </html>
