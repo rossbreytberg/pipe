@@ -231,7 +231,7 @@ height: 6px;
     margin-top: 100px;
     margin-left: auto;
     margin-right: auto;
-    overflow: auto;
+    overflow: hidden;
 }
 
 #loginInputForm {
@@ -265,7 +265,7 @@ height: 6px;
     visibility: hidden;
 }
 
-#pipe {
+.pipe {
     width: 0px;
     height: 0px;
     visibility: hidden;

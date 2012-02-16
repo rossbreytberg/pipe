@@ -16,9 +16,8 @@ window.onload = function() {
     var newFile = $('<div>')
     newFile.text(file.name+", "+file.type+", "+file.size+", shared by "+user)
     newFile.attr('class', 'fileListItem')
-    newFile.attr('file', file)
     newFile.get(0).onclick = function() {
-      downloadRequest(file)
+      downloadRequest(file, user)
     }
     $('#fileListContainer').append(newFile)
   }
@@ -43,8 +42,10 @@ window.onload = function() {
     socket.emit('refreshFileListRequest', {})
   }
 
-  function downloadRequest(file) {
-    socket.emit('downloadRequest', {file:file, id:btoa(file.name+file.type+file.size)})
+  function downloadRequest(file, fileOwner) {
+    var id = btoa(file.name+file.type+file.size+room+fileOwner+user)
+    socket.emit('downloadRequest', {file:file, id:id})
+    $('#downPipe').attr('src', '/download/'+id+'?filename='+file.name+'&filetype='+file.type+'&room='+room+'&uploader='+fileOwner+'&downloader='+user)
   }
 
   socket.on('connect', function() {
@@ -83,17 +84,13 @@ window.onload = function() {
   socket.on('uploadRequest', function(data) {
     for (var i = 0; i < sharedFiles.length; i++) {
       var file = sharedFiles[i]
-      if (btoa(file.name+file.type+file.size) == data['id']) {
+      if (btoa(file.name+file.type+file.size+room+user+data['requester']) == data['id']) {
         $('#uploadForm').attr('action', '/upload/'+data['id'])
         $('#uploadForm').get(0).submit()
         $('#uploadForm').attr('files', sharedFiles)
         $('#uploadForm').attr('action', '')
       }
     }
-  })
-
-  socket.on('beginDownload', function(data) {
-    $('#pipe').attr('src', '/download/'+data['id']+'?filename='+data['name'])
   })
 
 }

@@ -41,6 +41,7 @@ server.get('/:room', function(req, res) {
 })
 
 server.get('/download/:id', function(req, res) {
+    console.log('downloading: '+req.query)
     if (responses[req.params.id] == null) {
         responses[req.params.id] = [res]
     } else {
@@ -69,7 +70,8 @@ server.post('/upload/:id', function(req, res) {
                 })
             }
     } else {
-        res.write("File sent.")
+        console.log('Upload failed: '+req.params.id)
+        res.write("No downloader found.")
         res.end()
     }
 })
@@ -110,8 +112,8 @@ io.of('/pipe').on('connection', function(socket) {
 
     socket.on('refreshFileListRequest', function(data) {
         socket.get('room', function(err, room) {
-            socket.broadcast.to(room).emit('refreshFilesList', {})
-            socket.emit('refreshFilesList', {})
+            socket.broadcast.to(room).emit('refreshFileList', {})
+            socket.emit('refreshFileList', {})
         })
     })
 
@@ -145,8 +147,11 @@ io.of('/pipe').on('connection', function(socket) {
 
     socket.on('downloadRequest', function(data) {
         socket.get('room', function(err, room) {
-            socket.broadcast.to(room).emit('uploadRequest', {id:data['id']})
-            socket.emit('beginDownload', {id:data['id'], name:data['file'].name})
+            socket.get('user', function(err, user) {
+                socket.broadcast.to(room).emit('uploadRequest', {id:data['id'], requester:user})
+                socket.emit('uploadRequest', {id:data['id'], requester:user})
+            })
         })
     })
+
 })

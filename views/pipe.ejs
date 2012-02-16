@@ -48,7 +48,7 @@
                     <div id="filename">Name:</div>
                     <div id="filetype">Type:</div>
                     <div id="filesize">Size:</div>
-                    <form id="uploadForm" target="pipe" enctype="multipart/form-data" method="POST">
+                    <form id="uploadForm" target="upPipe" enctype="multipart/form-data" method="POST">
                         <input id="sharedFiles" type="file" name="file" />
                     </form>
                 </div>
@@ -58,7 +58,8 @@
             	<div class="subBar">File List</div>
                 <div id="fileListContainer" class="subContainer"></div>
             </div>
-            <iframe id="pipe" name="pipe" src=""></iframe>
+            <iframe id="upPipe" class="pipe" name="upPipe" src=""></iframe>
+            <iframe id="downPipe" class="pipe" name="downPipe" src=""></iframe>
         </div>
     </body>
 </html>
