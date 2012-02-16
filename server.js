@@ -90,29 +90,32 @@ io.sockets.on('connection', function(socket) {
 
 // deals with connections in rooms
 io.of('/pipe').on('connection', function(socket) {
-
     socket.on('setRoomAndUser', function(data) {
         socket.set('room', data['room'])
         socket.set('user', data['user'])
         socket.join(data['room'])
-        socket.broadcast.to(socket.room).emit('refreshFilesList', {})
+        socket.broadcast.to(data['room']).emit('refreshFileList', {})
+        socket.broadcast.to(data['room']).emit('refreshUserList', {})
+        socket.emit('refreshUserList', {})
     })
 
     socket.on('disconnect', function() {
         socket.get('room', function(err, room) {
             socket.broadcast.to(room).emit('refreshFilesList', {})
+            socket.get('user', function(err, user) {
+                socket.broadcast.to(room).emit('refreshUserList', {})
+            }) 
         })
-        
     })
 
-    socket.on('refreshFilesListRequest', function(data) {
+    socket.on('refreshFileListRequest', function(data) {
         socket.get('room', function(err, room) {
             socket.broadcast.to(room).emit('refreshFilesList', {})
             socket.emit('refreshFilesList', {})
         })
     })
 
-    socket.on('filesListUpdate', function(data) {
+    socket.on('fileListUpdate', function(data) {
         socket.get('room', function(err, room) {
             socket.get('user', function(err, user) {
                 socket.broadcast.to(room).emit('filesAdded', {files: data['files'], user:user})
@@ -120,6 +123,24 @@ io.of('/pipe').on('connection', function(socket) {
             })
         })
 
+    })
+
+    socket.on('userListUpdate', function(data) {
+        socket.get('room', function(err, room) {
+            socket.get('user', function(err, user) {
+                socket.broadcast.to(room).emit('userAdded', {user:user})
+                socket.emit('userAdded', {user:user})
+            })
+        })
+    })
+
+    socket.on('chatMessage', function(data) {
+        socket.get('room', function(err, room) {
+            socket.get('user', function(err, user) {
+                socket.broadcast.to(room).emit('chatMessage', {user:user, message:data['message']})
+                socket.emit('chatMessage', {user:user, message:data['message']})
+            })
+        })
     })
 
     socket.on('downloadRequest', function(data) {

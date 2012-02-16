@@ -64,6 +64,7 @@ body {
 #topBar a {
     color: #ffffff;
     text-decoration: none;
+    cursor: pointer;
 }
 
 #topBar a:visited {
@@ -77,19 +78,37 @@ body {
 }
 
 #topBarCenterContainer {
+    position: relative;
     width: 900px;
     height: 50px;
     margin: auto;
 }
 
 #topBarTitle {
-    float: left;
     font-size: 36px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
     cursor: default;
 }
 
+#topBarDisplayContainer {
+    width: 500px;
+    height: 50px;
+    margin: auto;
+}
+
+.topBarDisplay {
+    float: left;
+    padding-top: 1.1em;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
 .topBarRight {
-    float: right;
+    position: absolute;
+    top: 0px;
+    right: 0px;
     text-align: right;
     padding-top: 1.1em;
 }
@@ -118,36 +137,15 @@ body {
 }
 
 .subContainer {
-    width: 90%;
-    height: 90%;
-    padding: 5%;
+    padding: 8px;
     background: #f6f8f9;
     border-radius: 0px 0px 3px 3px;
 }
 
-#connectionInfo {
-    width: 380px;
-    height: 100px;
-}
-
-#sharedFilesPicker {
-    width: 380px;
-    height: 300px;
-}
-
-#chatRoom {
-    width: 380px;
-    height: 420px;
-    position: absolute;
-    top: 50px;
-    right:50px;
-}
-
-#chatText {
+.scrollableTextWrapArea {
     background: #ffffff;
-    width: 100%;
-    height: 290px;
     overflow: auto;
+    padding: 8px 8px;
     white-space: pre-wrap;  
     white-space: -moz-pre-wrap;
     white-space: -pre-wrap; 
@@ -160,12 +158,48 @@ body {
     filter: progid:DXImageTransform.Microsoft.dropShadow(color=#999, offX=0px, offY=1px, positive=true);
 }
 
+.scrollableTextWrapArea::-webkit-scrollbar {
+width: 6px;
+height: 6px;
+padding: 18px;
+-webkit-border-radius: 1ex;
+}
+
+.scrollableTextWrapArea::-webkit-scrollbar-thumb {
+background-color: #546172;
+padding: 8px;
+width: 6px;
+height: 6px;
+-webkit-border-radius: 1ex;
+}
+
+#chatRoom {
+    width: 560px;
+    height: 400px;
+    float: left;
+}
+
+#chatSubContainer {
+    width: 544px;
+    height: 351px;
+}
+
+#chatText {
+    width: 528px;
+    height: 303px;
+}
+
+#chatInputForm {
+    width: 544px;
+    height: 30px;
+}
+
 #chatInput {
     outline: 0;
     border: 0;
     font-size: 12px;
     padding: 8px 4px;
-    width: 98%;
+    width: 536px;
     border-radius: 3px;
     box-shadow: 0px 1px 4px #999;
     -webkit-box-shadow: 0px 1px 4px #999;
@@ -173,12 +207,36 @@ body {
     filter: progid:DXImageTransform.Microsoft.dropShadow(color=#999, offX=0px, offY=1px, positive=true);
 }
 
+#userList {
+    width: 224px;
+    height: 400px;
+    float: right;
+}
+
+#userListSubContainer {
+    width: 208px;
+    height: 351px;
+}
+
+#userListText {
+    width: 192px;
+    height: 335px;
+}
+
 #login {
-    width: 350px;
+    border: 1px;
+    border-style: solid;
+    border-color: #999;
+    width: 324px;
     margin-top: 100px;
     margin-left: auto;
     margin-right: auto;
     overflow: auto;
+}
+
+#loginInputForm {
+    width: 308px;
+    height: 94px;
 }
 
 .loginInput {
@@ -202,12 +260,14 @@ body {
 }
 
 .hiddenSubmitButton {
+    width: 0px;
+    height: 0px;
     visibility: hidden;
 }
 
 #pipe {
-    height: 0px;
     width: 0px;
+    height: 0px;
     visibility: hidden;
 }
 

@@ -5,6 +5,11 @@ window.onload = function() {
   var socket = io.connect('/pipe')
   var sharedFiles = $('#sharedFiles').get(0).files
 
+  $('#chatInputForm').submit(function() {
+    socket.emit('chatMessage', {message:$('#chatInput').val()})
+    $('#chatInput').get(0).value = ''
+  })
+
   $('#sharedFiles').get(0).addEventListener('change', sharedFilesUpdate, false)
 
   function fileAdd(file, user) {
@@ -15,16 +20,19 @@ window.onload = function() {
     newFile.get(0).onclick = function() {
       downloadRequest(file)
     }
-    $('#filesListContainer').append(newFile)
+    $('#fileListContainer').append(newFile)
   }
 
-  function fileRemove(file, user) {
-    var files = $('#filesListContainer').children()
-    for (var i = 0; i < files.length; i++) {
-      if ($(files[i]).text() == file.name+", "+file.type+", "+file.size+", shared by "+user) {
-        $(files[i]).remove()
-      }
-    }
+  function userAdd(user) {
+    var newUser = $('<div>')
+    newUser.text(user)
+    $('#userListText').append(newUser)
+  }
+
+  function newChatMessage(user, message) {
+    var newMessage = $('<div>')
+    newMessage.text(user+': '+message)
+    $('#chatText').append(newMessage)
   }
 
   function sharedFilesUpdate() {
@@ -32,7 +40,7 @@ window.onload = function() {
     $('#filename').text('Name: '+sharedFiles[0].name)
     $('#filetype').text('Type: '+sharedFiles[0].type)
     $('#filesize').text('Size: '+sharedFiles[0].size)
-    socket.emit('refreshFilesListRequest', {})
+    socket.emit('refreshFileListRequest', {})
   }
 
   function downloadRequest(file) {
@@ -41,11 +49,11 @@ window.onload = function() {
 
   socket.on('connect', function() {
     socket.emit('setRoomAndUser', {room:room, user:user})
-    $('#status').text("Status: Connected")
+    $('#statusDisplay').text("Status: Connected")
   })
 
   socket.on('disconnect', function() {
-    $('#status').text("Status: Disconnected")
+    $('#statusDisplay').text("Status: Disconnected")
   })
 
   socket.on('filesAdded', function(data) {
@@ -54,9 +62,22 @@ window.onload = function() {
     }
   })
 
-  socket.on('refreshFilesList', function(data) {
-    $('#filesListContainer').empty()
-    socket.emit('filesListUpdate', {files:sharedFiles})
+  socket.on('userAdded', function(data) {
+    userAdd(data['user'])
+  })
+
+  socket.on('refreshFileList', function(data) {
+    $('#fileListContainer').empty()
+    socket.emit('fileListUpdate', {files:sharedFiles})
+  })
+
+  socket.on('refreshUserList', function(data) {
+    $('#userListText').empty()
+    socket.emit('userListUpdate', {}) // data is blank because username is already stored in socket
+  })
+
+  socket.on('chatMessage', function(data) {
+    newChatMessage(data['user'], data['message'])
   })
 
   socket.on('uploadRequest', function(data) {
