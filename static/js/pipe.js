@@ -32,7 +32,8 @@ window.onload = function() {
         var newMessage = $('<div>')
         newMessage.text(user+': '+message)
         $('#chatText').append(newMessage)
-    }
+        $('#chatText').scrollTop($('#chatText').css('height').split('p')[0])
+       }
 
     function sharedFilesUpdate() {
         sharedFiles = $('#sharedFiles').get(0).files
