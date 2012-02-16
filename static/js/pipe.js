@@ -7,8 +7,11 @@ window.onload = function() {
     var sharedFiles = $('#sharedFiles').get(0).files
 
     $('#chatInputForm').submit(function() {
-        socket.emit('chatMessage', {message:$('#chatInput').val()})
-        $('#chatInput').get(0).value = ''
+        var message = $('#chatInput').val()
+        if (message != '') {
+            socket.emit('chatMessage', {message:$('#chatInput').val()})
+            $('#chatInput').get(0).value = ''
+        }
     })
 
     $('#sharedFiles').get(0).addEventListener('change', sharedFilesUpdate, false)
@@ -50,16 +53,16 @@ window.onload = function() {
     }
 
     function downloadRequest(file, fileOwner) {
-        var id = btoa(file.name+file.type+file.size+room+fileOwner+userId)
+        var id = btoa(escape(file.name)+escape(file.type)+file.size+escape(room)+fileOwner+userId)
         if (document.getElementById('download'+id) == null) {
-            socket.emit('downloadRequest', {file:file, id:id})
             var downloadFrame = $('<iframe>', {id:'download'+id, name:'download'+id, class:'pipe'})
             $('#container').append(downloadFrame)
             downloadFrame.load(function() {
                 downloadFrame.remove()
             })
             downloadFrame.attr('id', 'download'+id)
-            downloadFrame.attr('src', '/download/'+id+'?filename='+file.name+'&filetype='+file.type+'&room='+room+'&uploader='+fileOwner+'&downloader='+userId)
+            downloadFrame.attr('src', '/download/'+id+'?filename='+file.name+'&filetype='+file.type+'&size='+file.size+'&room='+room+'&uploader='+fileOwner+'&downloader='+userId)
+            socket.emit('downloadRequest', {file:file, id:id})   
         } else {
             alert('You are already downloading this!')
         }
@@ -105,7 +108,7 @@ window.onload = function() {
     socket.on('uploadRequest', function(data) {
         for (var i = 0; i < sharedFiles.length; i++) {
             var file = sharedFiles[i]
-            if (btoa(file.name+file.type+file.size+room+userId+data['requester']) == data['id']) {
+            if (btoa(escape(file.name)+escape(file.type)+file.size+room+userId+data['requester']) == data['id']) {
                 var uploadFrame = $('<iframe>', {id:'upload'+data['id'], name:'upload'+data['id'], class:'pipe'})
                 $('#container').append(uploadFrame)
                 uploadFrame.load(function() {

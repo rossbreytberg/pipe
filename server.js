@@ -48,7 +48,7 @@ server.get('/download/:id', function(req, res) {
     } else {
         responses[req.params.id].push(res)
     }
-    res.writeHead(200, {'connection':'keep-alive', 'content-disposition':'attachment;filename='+req.query.filename, 'content-type':'application/octet-stream'})
+    res.writeHead(200, {'connection':'keep-alive', 'content-disposition':'attachment;filename='+req.query.filename+';size='+req.query.filesize, 'content-type':'application/octet-stream'})
 })
 
 server.post('/upload/:id', function(req, res) {
