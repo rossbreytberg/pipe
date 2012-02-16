@@ -41,10 +41,8 @@ server.get('/:room', function(req, res) {
 })
 
 server.get('/download/:id', function(req, res) {
-    console.log('downloading: '+req.query.filename)
-    console.log(responses)
-    console.log(responses[req.params.id])
-    console.log('download info end')
+    console.log('In room "'+req.query.room+'", user '+req.query.downloader+' is downloading file "'+req.query.filename+'" ('+req.query.filetype+') from user '+req.query.uploader)
+    res.connection.setTimeout(0)
     if (responses[req.params.id] == null) {
         responses[req.params.id] = [res]
     } else {
@@ -54,10 +52,6 @@ server.get('/download/:id', function(req, res) {
 })
 
 server.post('/upload/:id', function(req, res) {
-    console.log('upload info')
-    console.log(responses)
-    console.log(responses[req.params.id])
-    console.log('upload info end')
     if (responses[req.params.id] != null) {
         var form = new formidable.IncomingForm();
             form.parse(req)
