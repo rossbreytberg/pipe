@@ -31,9 +31,15 @@ window.onload = function() {
     function newChatMessage(user, message) {
         var newMessage = $('<div>')
         newMessage.text(user+': '+message)
+        var updateScroll = true
+        if ($('#chatText')[0].scrollHeight > $('#chatText').scrollTop() + 319) {
+            updateScroll = false
+        }
         $('#chatText').append(newMessage)
-        $('#chatText').scrollTop($('#chatText').css('height').split('p')[0])
-       }
+        if (updateScroll) {
+            $('#chatText').scrollTop($('#chatText')[0].scrollHeight)
+        }
+    }
 
     function sharedFilesUpdate() {
         sharedFiles = $('#sharedFiles').get(0).files
