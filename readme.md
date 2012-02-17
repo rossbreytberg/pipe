@@ -2,14 +2,14 @@
 
 Requirements
 ------------
-node.js w/ express, ejs, socket.io, formidable
+node.js w/ express, ejs, socket.io
 
 ##Instructions:
 1. Download code.
 
 2. Navigate to directory and install dependencies using npm:
 
-	`npm install express ejs socket.io formidable`
+	`npm install express ejs socket.io`
 
 3. Run code:
 
