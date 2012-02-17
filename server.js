@@ -1,5 +1,4 @@
 var express = require('express')
-var formidable = require('formidable')
 var io = require('socket.io')
 
 var server = express.createServer()
@@ -43,38 +42,19 @@ server.get('/:room', function(req, res) {
 server.get('/download/:id', function(req, res) {
     console.log('In room "'+req.query.room+'", user '+req.query.downloader+' is downloading file "'+req.query.filename+'" ('+req.query.filetype+') from user '+req.query.uploader)
     res.connection.setTimeout(0)
+    sockets[req.query.uploader].emit('uploadRequest', {id:req.params.id, requester:req.query.downloader})
     if (responses[req.params.id] == null) {
-        responses[req.params.id] = [res]
+        responses[req.params.id] = res
     } else {
-        responses[req.params.id].push(res)
+        res.end()
     }
     res.writeHead(200, {'connection':'keep-alive', 'content-disposition':'attachment;filename='+req.query.filename+';size='+req.query.filesize, 'content-type':'application/octet-stream'})
 })
 
 server.post('/upload/:id', function(req, res) {
-    if (responses[req.params.id] != null) {
-        var form = new formidable.IncomingForm();
-            form.parse(req)
-            form.onPart = function(part) {
-                part.on('data', function(data) {
-                    for (var i = 0; i < responses[req.params.id].length; i++) {
-                        responses[req.params.id][i].write(data)
-                    }
-                })
-                part.on('end', function() {
-                    for (var i = 0; i < responses[req.params.id].length; i++) {
-                        responses[req.params.id][i].end()
-                    }
-                    delete responses[req.params.id]
-                    res.write("File sent.")
-                    res.end()
-                })
-            }
-    } else {
-        console.log('Upload failed: '+req.params.id)
-        res.write("No downloader found.")
-        res.end()
-    }
+    res.write('Sending file.')
+    res.end()
+    req.pipe(responses[req.params.id])
 })
 
 server.post('/chat', function(req, res) {
@@ -94,6 +74,8 @@ io.sockets.on('connection', function(socket) {
     })
 })
 
+// stores sockets indexed by socketIds
+var sockets = {}
 
 // deals with connections in rooms
 io.of('/pipe').on('connection', function(socket) {
@@ -105,15 +87,16 @@ io.of('/pipe').on('connection', function(socket) {
         socket.broadcast.to(data['room']).emit('refreshFileList', {})
         socket.broadcast.to(data['room']).emit('refreshUserList', {})
         socket.emit('refreshUserList', {})
+        sockets[socket.id] = socket
+        console.log('User '+data['user']+' ('+socket.id+') joined room '+data['room'])
     })
 
     socket.on('disconnect', function() {
         socket.get('room', function(err, room) {
             socket.broadcast.to(room).emit('refreshFileList', {})
-            socket.get('user', function(err, user) {
-                socket.broadcast.to(room).emit('refreshUserList', {})
-            })
+            socket.broadcast.to(room).emit('refreshUserList', {})
         })
+        delete sockets[socket.id]
     })
 
     socket.on('refreshFileListRequest', function(data) {
@@ -148,13 +131,6 @@ io.of('/pipe').on('connection', function(socket) {
                 socket.broadcast.to(room).emit('chatMessage', {user:user, message:data['message']})
                 socket.emit('chatMessage', {user:user, message:data['message']})
             })
-        })
-    })
-
-    socket.on('downloadRequest', function(data) {
-        socket.get('room', function(err, room) {
-            socket.broadcast.to(room).emit('uploadRequest', {id:data['id'], requester:socket.id})
-            socket.emit('uploadRequest', {id:data['id'], requester:socket.id})
         })
     })
 

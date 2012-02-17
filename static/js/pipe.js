@@ -6,6 +6,8 @@ window.onload = function() {
     var socket = io.connect('/pipe')
     var sharedFiles = $('#sharedFiles').get(0).files
 
+    $('#chatInput').attr('name', new Date().getTime())
+
     $('#chatInputForm').submit(function() {
         var message = $('#chatInput').val()
         if (message != '') {
@@ -62,7 +64,6 @@ window.onload = function() {
             })
             downloadFrame.attr('id', 'download'+id)
             downloadFrame.attr('src', '/download/'+id+'?filename='+file.name+'&filetype='+file.type+'&size='+file.size+'&room='+room+'&uploader='+fileOwner+'&downloader='+userId)
-            socket.emit('downloadRequest', {file:file, id:id})   
         } else {
             alert('You are already downloading this!')
         }
