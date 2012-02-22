@@ -58,6 +58,22 @@ window.onload = function() {
         fileNameDesc.text(sharedFile.get(0).files[0].name)
         fileTypeDesc.text(sharedFile.get(0).files[0].type)
         fileSizeDesc.text(sharedFile.get(0).files[0].size+' bytes')
+        var form = sharedFile.parent()
+        sharedFile.css({visibility:'hidden', width:'0px', height:'0px'})
+        var removeButton = $('<input>', {class:'removeButton', type:'button', value:'Remove'})
+        removeButton.get(0).onclick = function() {
+            form.parent().remove()
+            sharedFiles = []
+            var sharedFileList = $('.sharedFile')
+            for (var i = 0; i < sharedFileList.size(); i++) {
+                var file = sharedFileList.get(i).files[0]
+                if (file != null) {
+                    sharedFiles.push(file)
+                }
+            }
+            socket.emit('refreshFileListRequest', {})
+        }
+        form.append(removeButton)
         var children = $('#fileListingContainer').children()
         if ($(children[children.size()-1]).children()[0] == fileNameDesc.get(0)) {
             var newFileListing = $('<div>', {class:'fileListing'})
