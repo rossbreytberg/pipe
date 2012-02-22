@@ -273,7 +273,15 @@ body {
 }
 
 .fileSizeDescriptor {
-    width: 155px;
+    width: 100px;
+    height: 20px;
+    margin: 8px;
+    float: left;
+    overflow: hidden;
+}
+
+.fileUserDescriptor {
+    width: 150px;
     height: 20px;
     margin: 8px;
     float: left;
@@ -299,6 +307,28 @@ body {
     height: 20px;
     margin: 8px;
     float: right;
+}
+
+.fileListItem {
+    width: 784px;
+    height: 36px;
+    cursor: pointer;
+}
+
+.fileListItem:hover {
+    border-radius: 3px;
+    box-shadow: 0px 1px 4px #999;
+    -webkit-box-shadow: 0px 1px 4px #999;
+    -moz-box-shadow: 0px 1px 4px #999;
+    filter: progid:DXImageTransform.Microsoft.dropShadow(color=#999, offX=0px, offY=1px, positive=true);
+    background: #f5f6f6;
+    background: -moz-linear-gradient(top, #f5f6f6 0%, #dbdce2 21%, #b8bac6 49%, #dddfe3 80%, #f5f6f6 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f6f6), color-stop(21%,#dbdce2), color-stop(49%,#b8bac6), color-stop(80%,#dddfe3), color-stop(100%,#f5f6f6));
+    background: -webkit-linear-gradient(top, #f5f6f6 0%,#dbdce2 21%,#b8bac6 49%,#dddfe3 80%,#f5f6f6 100%);
+    background: -o-linear-gradient(top, #f5f6f6 0%,#dbdce2 21%,#b8bac6 49%,#dddfe3 80%,#f5f6f6 100%);
+    background: -ms-linear-gradient(top, #f5f6f6 0%,#dbdce2 21%,#b8bac6 49%,#dddfe3 80%,#f5f6f6 100%);
+    background: linear-gradient(top, #f5f6f6 0%,#dbdce2 21%,#b8bac6 49%,#dddfe3 80%,#f5f6f6 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f6f6', endColorstr='#f5f6f6',GradientType=0 );
 }
 
 #login {
@@ -347,14 +377,4 @@ body {
     width: 0px;
     height: 0px;
     visibility: hidden;
-}
-
-.fileListItem {
-    cursor: pointer;
-    color: #546172;
-}
-
-.fileListItem:hover {
-    cursor: pointer;
-    text-decoration: underline;
 }

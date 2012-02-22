@@ -19,12 +19,23 @@ window.onload = function() {
     $('#sharedFile').get(0).addEventListener('change', function() {sharedFileUpdate($('#sharedFile'), $('#filename'), $('#filetype'), $('#filesize'))}, false)
 
     function fileAdd(file, user, userId) {
-        var newFile = $('<div>', {class:'fileListItem'})
-        newFile.text(file.name+", "+file.type+", "+file.size+", shared by "+user)
-        newFile.get(0).onclick = function() {
+        var newFileListItem = $('<div>', {class:'fileListItem'})
+        var newFileNameDesc = $('<div>', {class:'fileNameDescriptor'})
+        var newFileTypeDesc = $('<div>', {class:'fileTypeDescriptor'})
+        var newFileSizeDesc = $('<div>', {class:'fileSizeDescriptor'})
+        var newFileUserDesc = $('<div>', {class:'fileUserDescriptor'})
+        newFileNameDesc.text(file.name)
+        newFileTypeDesc.text(file.type)
+        newFileSizeDesc.text(file.size+' bytes')
+        newFileUserDesc.text('Shared by '+user)
+        newFileListItem.append(newFileNameDesc)
+        newFileListItem.append(newFileTypeDesc)
+        newFileListItem.append(newFileSizeDesc)
+        newFileListItem.append(newFileUserDesc)
+        newFileListItem.get(0).onclick = function() {
             downloadRequest(file, userId)
         }
-        $('#fileListContainer').append(newFile)
+        $('#fileListContainer').append(newFileListItem)
     }
 
     function userAdd(user) {
