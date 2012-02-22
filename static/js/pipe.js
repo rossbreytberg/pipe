@@ -34,8 +34,13 @@ window.onload = function() {
     }
 
     function newChatMessage(user, message) {
-        var newMessage = $('<div>')
-        newMessage.text(user+': '+message)
+        var newMessage = $('<div>', {class:'chatMessage'})
+        var chatMessageUser = $('<div>', {class:'chatMessageUser'})
+        chatMessageUser.text(user+': ')
+        var chatMessageText = $('<div>', {class:'chatMessageText'})
+        chatMessageText.text(message)
+        newMessage.append(chatMessageUser)
+        newMessage.append(chatMessageText)
         var updateScroll = true
         if ($('#chatText')[0].scrollHeight > $('#chatText').scrollTop() + 319) {
             updateScroll = false
