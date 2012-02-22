@@ -317,18 +317,7 @@ body {
 
 .fileListItem:hover {
     border-radius: 3px;
-    box-shadow: 0px 1px 4px #999;
-    -webkit-box-shadow: 0px 1px 4px #999;
-    -moz-box-shadow: 0px 1px 4px #999;
-    filter: progid:DXImageTransform.Microsoft.dropShadow(color=#999, offX=0px, offY=1px, positive=true);
-    background: #f2f6f8;
-    background: -moz-linear-gradient(top, #f2f6f8 0%, #d8e1e7 50%, #e0eff9 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f6f8), color-stop(50%,#d8e1e7), color-stop(100%,#e0eff9));
-    background: -webkit-linear-gradient(top, #f2f6f8 0%,#d8e1e7 50%,#e0eff9 100%);
-    background: -o-linear-gradient(top, #f2f6f8 0%,#d8e1e7 50%,#e0eff9 100%);
-    background: -ms-linear-gradient(top, #f2f6f8 0%,#d8e1e7 50%,#e0eff9 100%);
-    background: linear-gradient(top, #f2f6f8 0%,#d8e1e7 50%,#e0eff9 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f6f8', endColorstr='#e0eff9',GradientType=0 );
+    background: #E3E4E5;
 }
 
 #login {
