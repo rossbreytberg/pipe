@@ -223,6 +223,49 @@ height: 6px;
     height: 335px;
 }
 
+.fileListing {
+    width: 784px;
+    height: 36px;
+}
+
+.fileNameDescriptor {
+    width: 315px;
+    height: 20px;
+    margin: 8px;
+    float: left;
+    overflow: hidden;
+}
+
+.fileTypeDescriptor {
+    width: 155px;
+    height: 20px;
+    margin: 8px;
+    float: left;
+    overflow: hidden;
+}
+
+.fileSizeDescriptor {
+    width: 155px;
+    height: 20px;
+    margin: 8px;
+    float: left;
+    overflow: hidden;
+}
+
+.sharedFile {
+    width: 90px;
+    height: 20px;
+    margin: 0px;
+    float: right;
+}
+
+.uploadForm {
+    width: 90px;
+    height: 20px;
+    margin: 8px;
+    float: right;
+}
+
 #login {
     border: 1px;
     border-style: solid;

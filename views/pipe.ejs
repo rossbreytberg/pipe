@@ -44,13 +44,15 @@
             <br />
             <div id="sharedFilesPicker" class="subWindow">
                 <div class="subBar">Currently Sharing</div>
-                <div class="subContainer">
-                    <div id="filename">Name:</div>
-                    <div id="filetype">Type:</div>
-                    <div id="filesize">Size:</div>
-                    <form id="uploadForm" enctype="multipart/form-data" method="POST">
-                        <input id="sharedFiles" type="file" name="file" />
-                    </form>
+                <div id="fileListingContainer" class="subContainer">
+                    <div class="fileListing">
+                        <div id="filename" class="fileNameDescriptor"></div>
+                        <div id="filetype" class="fileTypeDescriptor">No file selected.</div>
+                        <div id="filesize" class="fileSizeDescriptor"></div>
+                        <form id="uploadForm" class="uploadForm" enctype="multipart/form-data" method="POST">
+                            <input id="sharedFile" class="sharedFile" type="file" name="file" />
+                        </form>
+                    </div>
                 </div>
             </div>
             <br />

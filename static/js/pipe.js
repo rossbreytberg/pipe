@@ -4,7 +4,7 @@ window.onload = function() {
     var userId = 0
     history.replaceState({}, "Pipe", "/"+room+"?user="+user)
     var socket = io.connect('/pipe')
-    var sharedFiles = $('#sharedFiles').get(0).files
+    var sharedFiles = []
 
     $('#chatInput').attr('name', new Date().getTime())
 
@@ -16,7 +16,7 @@ window.onload = function() {
         }
     })
 
-    $('#sharedFiles').get(0).addEventListener('change', sharedFilesUpdate, false)
+    $('#sharedFile').get(0).addEventListener('change', function() {sharedFileUpdate($('#sharedFile'), $('#filename'), $('#filetype'), $('#filesize'))}, false)
 
     function fileAdd(file, user, userId) {
         var newFile = $('<div>', {class:'fileListItem'})
@@ -46,11 +46,35 @@ window.onload = function() {
         }
     }
 
-    function sharedFilesUpdate() {
-        sharedFiles = $('#sharedFiles').get(0).files
-        $('#filename').text('Name: '+sharedFiles[0].name)
-        $('#filetype').text('Type: '+sharedFiles[0].type)
-        $('#filesize').text('Size: '+sharedFiles[0].size)
+    function sharedFileUpdate(sharedFile, fileNameDesc, fileTypeDesc, fileSizeDesc) {
+        sharedFiles = []
+        var sharedFileList = $('.sharedFile')
+        for (var i = 0; i < sharedFileList.size(); i++) {
+            var file = sharedFileList.get(i).files[0]
+            if (file != null) {
+                sharedFiles.push(file)
+            }
+        }
+        fileNameDesc.text(sharedFile.get(0).files[0].name)
+        fileTypeDesc.text(sharedFile.get(0).files[0].type)
+        fileSizeDesc.text(sharedFile.get(0).files[0].size+' bytes')
+        var children = $('#fileListingContainer').children()
+        if ($(children[children.size()-1]).children()[0] == fileNameDesc.get(0)) {
+            var newFileListing = $('<div>', {class:'fileListing'})
+            var newFileNameDesc = $('<div>', {class:'fileNameDescriptor'})
+            var newFileTypeDesc = $('<div>', {class:'fileTypeDescriptor'})
+            newFileTypeDesc.text('No file selected.')
+            var newFileSizeDesc = $('<div>', {class:'fileSizeDescriptor'})
+            newFileListing.append(newFileNameDesc)
+            newFileListing.append(newFileTypeDesc)
+            newFileListing.append(newFileSizeDesc)
+            var newUploadForm = $('<form>', {class:'uploadForm', enctype:'multipart/form-data', method:'POST'})
+            var newFileInput = $('<input>', {class:'sharedFile', type:'file', name:'file'})
+            newUploadForm.append(newFileInput)
+            newFileListing.append(newUploadForm)
+            newFileListing.get(0).addEventListener('change', function() {sharedFileUpdate(newFileInput, newFileNameDesc, newFileTypeDesc, newFileSizeDesc)}, false)
+            $('#fileListingContainer').append(newFileListing)
+        }
         socket.emit('refreshFileListRequest', {})
     }
 
@@ -83,6 +107,7 @@ window.onload = function() {
     })
 
     socket.on('filesAdded', function(data) {
+        console.log(data['files'])
         for (var i = 0; i < data['files'].length; i++) {
             fileAdd(data['files'][i], data['user'], data['userId'])
         }
