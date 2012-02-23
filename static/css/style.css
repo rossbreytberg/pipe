@@ -204,16 +204,19 @@ body {
 }
 
 .chatMessage {
-    overflow: hidden;
+    clear: both;
+    word-wrap: break-word;
 }
 
 .chatMessageUser {
     font-weight: bold;
-    float: left;
+    display: inline;
+    word-wrap: break-word;
 }
 
 .chatMessageText {
-    float: left;
+    display: inline;
+    word-wrap: break-word;
 }
 
 #chatInputForm {
