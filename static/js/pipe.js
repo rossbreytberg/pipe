@@ -109,14 +109,10 @@ window.onload = function() {
 
     function downloadRequest(file, fileOwner) {
         var id = btoa(escape(file.name)+escape(file.type)+file.size+escape(room)+fileOwner+userId)
-        if (document.getElementById('download'+id) == null) {
-            var downloadFrame = $('<iframe>', {id:'download'+id, name:'download'+id, class:'pipe'})
-            $('#container').append(downloadFrame)
-            downloadFrame.attr('id', 'download'+id)
-            downloadFrame.attr('src', '/download/'+id+'?filename='+file.name+'&filetype='+file.type+'&size='+file.size+'&room='+room+'&uploader='+fileOwner+'&downloader='+userId)
-        } else {
-            alert('You are already downloading this!')
-        }
+        var downloadFrame = $('<iframe>', {id:'download'+id, name:'download'+id, class:'pipe'})
+        $('#container').append(downloadFrame)
+        downloadFrame.attr('id', 'download'+id)
+        downloadFrame.attr('src', '/download/'+id+'?filename='+file.name+'&filetype='+file.type+'&size='+file.size+'&room='+room+'&uploader='+fileOwner+'&downloader='+userId)
     }
 
     socket.on('connect', function() {
@@ -162,7 +158,6 @@ window.onload = function() {
             if (btoa(escape(file.name)+escape(file.type)+file.size+room+userId+data['requester']) == data['id']) {
                 var uploadFrame = $('<iframe>', {id:'upload'+data['id'], name:'upload'+data['id'], class:'pipe'})
                 $('#container').append(uploadFrame)
-                console.log($('.uploadForm')[i])
                 $('.uploadForm')[i].target = 'upload'+data['id']
                 $('.uploadForm')[i].action = '/upload/'+data['id']
                 $('.uploadForm')[i].submit()
@@ -171,11 +166,11 @@ window.onload = function() {
     })
 
     socket.on('uploadComplete', function(data) {
-        $('#upload'+data['id']).remove()
+        $(document.getElementById('upload'+data['id'])).remove()
     })
 
     socket.on('downloadComplete', function(data) {
-        $('#download'+data['id']).remove()
+        $(document.getElementById('download'+data['id'])).remove()
     })
 
 }
