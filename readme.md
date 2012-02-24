@@ -1,7 +1,7 @@
 ###Pipe is a file-sharing web application that streams data between users without saving it on the server.
 
 ##Requirements
-node.js w/ express, ejs, socket.io
+node.js w/ express, ejs, formidable, socket.io
 
 ##Instructions:
 1. Download code.
