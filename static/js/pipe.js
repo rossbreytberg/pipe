@@ -62,7 +62,7 @@ window.onload = function() {
         }
     }
 
-    function sharedFileUpdate(sharedFile, fileNameDesc, fileTypeDesc, fileSizeDesc) {
+    function updateSharedFilesList() {
         sharedFiles = []
         var sharedFileList = $('.sharedFile')
         for (var i = 0; i < sharedFileList.size(); i++) {
@@ -71,6 +71,10 @@ window.onload = function() {
                 sharedFiles.push(file)
             }
         }
+    }
+
+    function sharedFileUpdate(sharedFile, fileNameDesc, fileTypeDesc, fileSizeDesc) {
+        updateSharedFilesList()
         fileNameDesc.text(sharedFile.get(0).files[0].name)
         fileTypeDesc.text(sharedFile.get(0).files[0].type)
         fileSizeDesc.text(sharedFile.get(0).files[0].size+' bytes')
@@ -79,14 +83,7 @@ window.onload = function() {
         var removeButton = $('<input>', {class:'removeButton', type:'button', value:'Remove'})
         removeButton.get(0).onclick = function() {
             form.parent().remove()
-            sharedFiles = []
-            var sharedFileList = $('.sharedFile')
-            for (var i = 0; i < sharedFileList.size(); i++) {
-                var file = sharedFileList.get(i).files[0]
-                if (file != null) {
-                    sharedFiles.push(file)
-                }
-            }
+            updateSharedFilesList()
             socket.emit('refreshFileListRequest', {})
         }
         form.append(removeButton)
@@ -139,7 +136,6 @@ window.onload = function() {
     })
 
     socket.on('filesAdded', function(data) {
-        console.log(data['files'])
         for (var i = 0; i < data['files'].length; i++) {
             fileAdd(data['files'][i], data['user'], data['userId'])
         }
@@ -172,9 +168,10 @@ window.onload = function() {
                 uploadFrame.load(function() {
                     uploadFrame.remove()
                 })
-                $('#uploadForm').attr('target', 'upload'+data['id'])
-                $('#uploadForm').attr('action', '/upload/'+data['id'])
-                $('#uploadForm').get(0).submit()
+                console.log($('.uploadForm')[i])
+                $('.uploadForm')[i].target = 'upload'+data['id']
+                $('.uploadForm')[i].action = '/upload/'+data['id']
+                $('.uploadForm')[i].submit()
             }
         }
     })

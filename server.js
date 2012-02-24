@@ -1,4 +1,5 @@
 var express = require('express')
+var formidable = require('formidable')
 var io = require('socket.io')
 
 var server = express.createServer()
@@ -48,13 +49,36 @@ server.get('/download/:id', function(req, res) {
     } else {
         res.end()
     }
-    res.writeHead(200, {'connection':'keep-alive', 'content-disposition':'attachment;filename='+req.query.filename, 'content-length':req.query.size, 'content-type':'application/octet-stream'})
+    res.writeHead(200, {'connection':'keep-alive', 'content-disposition':'attachment;filename='+req.query.filename, 'content-length':req.query.size, 'content-type':req.query.filetype})
 })
 
+var pausecount = 0
+var resumecount = 0
+
 server.post('/upload/:id', function(req, res) {
-    res.write('Sending file.')
+    var form = new formidable.IncomingForm();
+        form.parse(req)
+        form.onPart = function(part) {
+            responses[req.params.id].on('drain', function() {
+                form.resume()
+                console.log('resume'+resumecount)
+                resumecount++
+            })
+            part.on('data', function(data) {
+                if(!responses[req.params.id].write(data)) {
+                    form.pause()
+                    console.log('pause'+pausecount)
+                    pausecount++
+                }
+            })
+            part.on('end', function() {
+                responses[req.params.id].end()
+                delete responses[req.params.id]
+                res.write("File sent.")
+                res.end()
+            })
+        }
     res.end()
-    req.pipe(responses[req.params.id])
 })
 
 server.post('/chat', function(req, res) {
