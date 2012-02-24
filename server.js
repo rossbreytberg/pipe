@@ -45,7 +45,7 @@ server.get('/download/:id', function(req, res) {
     res.connection.setTimeout(0)
     sockets[req.query.uploader].emit('uploadRequest', {id:req.params.id, requester:req.query.downloader})
     if (responses[req.params.id] == null) {
-        responses[req.params.id] = res
+        responses[req.params.id] = [res, req.query.uploader, req.query.downloader]
     } else {
         res.end()
     }
@@ -56,16 +56,18 @@ server.post('/upload/:id', function(req, res) {
     var form = new formidable.IncomingForm()
     form.parse(req)
     form.onPart = function(part) {
-        responses[req.params.id].on('drain', function() {
+        responses[req.params.id][0].on('drain', function() {
             form.resume()
         })
         part.on('data', function(data) {
-            if(!responses[req.params.id].write(data)) {
+            if(!responses[req.params.id][0].write(data)) {
                 form.pause()
             }
         })
         part.on('end', function() {
-            responses[req.params.id].end()
+            responses[req.params.id][0].end()
+            sockets[responses[req.params.id][1]].emit('uploadComplete', {id:req.params.id})
+            sockets[responses[req.params.id][2]].emit('downloadComplete', {id:req.params.id})
             delete responses[req.params.id]
             res.end()
         })

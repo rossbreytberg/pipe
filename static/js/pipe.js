@@ -112,9 +112,6 @@ window.onload = function() {
         if (document.getElementById('download'+id) == null) {
             var downloadFrame = $('<iframe>', {id:'download'+id, name:'download'+id, class:'pipe'})
             $('#container').append(downloadFrame)
-            downloadFrame.load(function() {
-                downloadFrame.remove()
-            })
             downloadFrame.attr('id', 'download'+id)
             downloadFrame.attr('src', '/download/'+id+'?filename='+file.name+'&filetype='+file.type+'&size='+file.size+'&room='+room+'&uploader='+fileOwner+'&downloader='+userId)
         } else {
@@ -165,15 +162,20 @@ window.onload = function() {
             if (btoa(escape(file.name)+escape(file.type)+file.size+room+userId+data['requester']) == data['id']) {
                 var uploadFrame = $('<iframe>', {id:'upload'+data['id'], name:'upload'+data['id'], class:'pipe'})
                 $('#container').append(uploadFrame)
-                uploadFrame.load(function() {
-                    uploadFrame.remove()
-                })
                 console.log($('.uploadForm')[i])
                 $('.uploadForm')[i].target = 'upload'+data['id']
                 $('.uploadForm')[i].action = '/upload/'+data['id']
                 $('.uploadForm')[i].submit()
             }
         }
+    })
+
+    socket.on('uploadComplete', function(data) {
+        $('#upload'+data['id']).remove()
+    })
+
+    socket.on('downloadComplete', function(data) {
+        $('#download'+data['id']).remove()
     })
 
 }
