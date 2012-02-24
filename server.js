@@ -56,28 +56,28 @@ var pausecount = 0
 var resumecount = 0
 
 server.post('/upload/:id', function(req, res) {
-    var form = new formidable.IncomingForm();
-        form.parse(req)
-        form.onPart = function(part) {
-            responses[req.params.id].on('drain', function() {
-                form.resume()
-                console.log('resume'+resumecount)
-                resumecount++
-            })
-            part.on('data', function(data) {
-                if(!responses[req.params.id].write(data)) {
-                    form.pause()
-                    console.log('pause'+pausecount)
-                    pausecount++
-                }
-            })
-            part.on('end', function() {
-                responses[req.params.id].end()
-                delete responses[req.params.id]
-                res.write("File sent.")
-                res.end()
-            })
-        }
+    var form = new formidable.IncomingForm()
+    form.parse(req)
+    form.onPart = function(part) {
+        responses[req.params.id].on('drain', function() {
+            form.resume()
+            console.log('resume'+resumecount)
+            resumecount++
+        })
+        part.on('data', function(data) {
+            if(!responses[req.params.id].write(data)) {
+                form.pause()
+                console.log('pause'+pausecount)
+                pausecount++
+            }
+        })
+        part.on('end', function() {
+            responses[req.params.id].end()
+            delete responses[req.params.id]
+            res.write("File sent.")
+            res.end()
+        })
+    }
     res.end()
 })
 
