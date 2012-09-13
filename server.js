@@ -9,7 +9,7 @@ server.set('view options', {
 })
 server.set('views', __dirname + "/views")
 server.use("/static", express.static(__dirname + "/static"))
-server.listen(80)
+server.listen(8080)
 
 var io = io.listen(server)
 io.set('log level', 1)
@@ -20,7 +20,7 @@ server.get('/', function(req, res) {
     if (!req.query.room) {
         res.render('index', {userCount:userCount})
     } else {
-    var user = ''
+        var user = ''
         if (req.query.user) {
             user = req.query.user
         } else {
@@ -45,12 +45,12 @@ server.get('/download/:id', function(req, res) {
     res.connection.setTimeout(0)
     sockets[req.query.uploader].emit('uploadRequest', {id:req.params.id, requester:req.query.downloader})
     if (responses[req.params.id] == null) {
+        res.writeHead(200, {'connection':'keep-alive', 'content-disposition':'attachment;filename='+req.query.filename, 'content-length':req.query.size, 'content-type':req.query.filetype})
         responses[req.params.id] = [res, req.query.uploader, req.query.downloader]
     } else {
         sockets[req.query.downloader].emit('downloadComplete', {id:req.params.id})
         res.end()
     }
-    res.writeHead(200, {'connection':'keep-alive', 'content-disposition':'attachment;filename='+req.query.filename, 'content-length':req.query.size, 'content-type':req.query.filetype})
 })
 
 server.post('/upload/:id', function(req, res) {
